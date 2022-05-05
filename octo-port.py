@@ -88,13 +88,13 @@ def get_completion_time(t1, t2):
 
     for time in total_time:
         if  formatted_time != "" and time == "seconds" and float(total_time[time]) != 0:
-            formatted_time = f"{formatted_time}and {total_time[time]} {time} "
+            formatted_time = f"{formatted_time} and {total_time[time]} {time}"
         elif float(total_time[time]) != 0:
-            formatted_time = f"{formatted_time}{total_time[time]} {time} "
+            formatted_time = f"{formatted_time} {total_time[time]} {time}"
 
     #print (totaltime)
     #total = re.sub('(0:0)(0:)', "", str(totaltime))
-    print(colored(f"Scan completed in {formatted_time}", "green"))
+    print(colored(f"Scan completed in{formatted_time}.", "green"))
 
 get_completion_time(t1, t2)
 
