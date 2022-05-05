@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import pyfiglet
+import subprocess
 from termcolor import colored
 import nmap
 import ipaddress
@@ -10,7 +11,7 @@ from datetime import datetime
 #sudo cp ~/executable-bash/octoport/octo-port.py /usr/bin/octo-port
 # OR RUN:
 # update-home-tools
-
+subprocess.call("clear", shell=True)
 
 fig = pyfiglet.Figlet()
 port_range_pattern = re.compile("([0-9]+)-([0-9]+)")
@@ -18,7 +19,7 @@ port_min = 0
 port_max = 65535
 
 
-print("\n\n\n\n\n\n" + colored(pyfiglet.figlet_format("OCTOPORT", font="computer", width=120), 'magenta'))
+print("\n" + colored(pyfiglet.figlet_format("OCTOPORT", font="computer", width=120), 'magenta'))
 print("\n****************************************************************")
 print("*                                                              *")
 print("* Copyright of " + colored("Austin Rhoads", "green") + ", 2022                             *")
@@ -69,11 +70,33 @@ for port in range(port_min, port_max + 1):
         print (f"Cannot scan port {port}.")
 
 t2 = datetime.now()
-totaltime = t2 - t1
-total = re.sub('(0:0)(0:)', "", str(totaltime))
 
-print(colored(" Scan completed in " + total + " seconds.", "green"))
 
+
+
+def get_completion_time(t1, t2):
+    totaltime = t2 - t1
+    timeseparater = re.compile("([0-9]+):([0-9]+):(\d+(?:\.\d+)?)")
+    time_obj = timeseparater.search(str(totaltime))
+    total_time = {
+        "hours": time_obj.group(1),
+        "minutes": time_obj.group(2),
+        "seconds": time_obj.group(3)
+    }
+
+    formatted_time = ""
+
+    for time in total_time:
+        if  formatted_time != "" and time == "seconds" and float(total_time[time]) != 0:
+            formatted_time = f"{formatted_time}and {total_time[time]} {time} "
+        elif float(total_time[time]) != 0:
+            formatted_time = f"{formatted_time}{total_time[time]} {time} "
+
+    #print (totaltime)
+    #total = re.sub('(0:0)(0:)', "", str(totaltime))
+    print(colored(f"Scan completed in {formatted_time}", "green"))
+
+get_completion_time(t1, t2)
 
 
 
