@@ -1,9 +1,16 @@
+#!/usr/bin/env python3
 import pyfiglet
 from termcolor import colored
 import nmap
 import ipaddress
 import re
 from datetime import datetime
+
+#to update in bin file run from home directory:
+#sudo cp ~/executable-bash/octoport/octo-port.py /usr/bin/octo-port
+# OR RUN:
+# update-home-tools
+
 
 fig = pyfiglet.Figlet()
 port_range_pattern = re.compile("([0-9]+)-([0-9]+)")
@@ -67,6 +74,6 @@ total = re.sub('(0:0)(0:)', "", str(totaltime))
 
 print(colored(" Scan completed in " + total + " seconds.", "green"))
 
-#192.168.44.10
-#192.168.56.1
+
+
 
