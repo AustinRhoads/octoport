@@ -19,7 +19,9 @@ port_min = 0
 port_max = 65535
 
 
-print("\n" + colored(pyfiglet.figlet_format("OCTOPORT", font="computer", width=120), 'magenta'))
+#print("\n" + colored(pyfiglet.figlet_format("OCTOPORT", font="computer", width=120), 'magenta'))
+#print("\n" + colored(pyfiglet.figlet_format("OCTOPORT", font="isometric1", width=120), 'magenta'))
+print("\n" + colored(pyfiglet.figlet_format("OCTOPORT", font="poison", width=120), 'magenta'))
 print("\n****************************************************************")
 print("*                                                              *")
 print("* Copyright of " + colored("Austin Rhoads", "green") + ", 2022                             *")
@@ -51,21 +53,74 @@ print (colored("Scanning "+ ip_add_submitted + " on ports " + port_range + " ...
 
 nm = nmap.PortScanner()
 t1 = datetime.now()
+#           |  6   |   8    |   9     |         24             |    9    |          24            | 
+
+format_str_lengths = {
+    "port": 6,
+    "status": 8,
+    "tcp_name": 9,
+    "product": 24,
+    "version": 9,
+    "extra_info": 24,
+    "cpe": 40
+}
+
+#127.0.0.1
+print ("     ______________________________________________________________________________________________________________________________")
+print ("    | PORT | STATUS | SERVICE |      PRODUCT NAME      | VERSION |       EXTRA INFO       |                   CPE                  |")
+print ("    |______|________|_________|________________________|_________|________________________|________________________________________|")
+
+def format_port_info(info):
+    full_str = "    "
+    
+    for attribute in info:
+        att = str(info[attribute])
+        info_length = len(att)
+        total_length = format_str_lengths[attribute]
+        front = True
+        while info_length < total_length:
+            
+            if front:
+                att = " " + att
+                info_length = info_length + 1
+                front = not front
+            else:
+                att = att + " "
+                info_length = info_length + 1
+                front = not front
+
+
+
+        full_str = full_str + "|" + att
+    
+    return full_str + "|"
+
+
 
 for port in range(port_min, port_max + 1):
+   
     try:
         result = nm.scan(ip_add_submitted, str(port))
         #print (result)
-        port_status = (result['scan'][ip_add_submitted]['tcp'][port]['state'])
-        port_tcp_name = (result['scan'][ip_add_submitted]['tcp'][port]['name'])
-        port_tcp_product = (result['scan'][ip_add_submitted]['tcp'][port]['product'])
-        port_tcp_version = (result['scan'][ip_add_submitted]['tcp'][port]['version'])
-        port_tcp_extra_info = (result['scan'][ip_add_submitted]['tcp'][port]['extrainfo'])
-        port_tcp_cpe = (result['scan'][ip_add_submitted]['tcp'][port]['cpe'])
-        if port_status == "open":
-            print(f"Port {port} is {port_status} : {port_tcp_name} : : {port_tcp_product} : : {port_tcp_version} : : {port_tcp_extra_info}")
-        else:
-            print(f"Port {port} is {port_status}")
+        port_info = {
+            "port": port,
+            "status": (result['scan'][ip_add_submitted]['tcp'][port]['state']),
+            "tcp_name": (result['scan'][ip_add_submitted]['tcp'][port]['name']),
+            "product": (result['scan'][ip_add_submitted]['tcp'][port]['product']),
+            "version": (result['scan'][ip_add_submitted]['tcp'][port]['version']),
+            "extra_info": (result['scan'][ip_add_submitted]['tcp'][port]['extrainfo']),
+            "cpe": (result['scan'][ip_add_submitted]['tcp'][port]['cpe'])
+        }
+        
+
+        if port_info["status"] == "open":
+            formatted_port_str = format_port_info(port_info)
+            print(formatted_port_str)
+            print ("    |______|________|_________|________________________|_________|________________________|________________________________________|")
+           
+           
+        #else:
+        #    print(f"Port {port} is {port_status}")
     except:
         print (f"Cannot scan port {port}.")
 
